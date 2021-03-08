@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script >
+            const queue = [];
+            var url = 'http://walla.co.il/test'
+            queue.push({url:url,depth:'33'});
+            var cururl = queue.shift();
+            console.log(cururl != undefined)
+            
+
+            var countPage = 1;
+            var countDepth = 0;
+            let visited = new Map();
+            visited.set(url,{depth:countDepth,page:countPage,title:'temptitle'})
+            visited.set("url1",{depth:countDepth,page:countPage,title:'temptitle1'})
+            visited.set("url2",{depth:countDepth,page:countPage,title:'temptitle2'})
+            visited.get(url).title='new title';
+            console.log(visited.get(url).title + '---------')
+            console.log(visited.get(url));
+            let jsonObject = {};            
+            for (let [key, value] of visited) {
+                jsonObject[key] = value  ;
+                //  console.log(key + ' = ' + value.depth + ',' + value.page + ',' + value.title)
+            }
+            console.log(JSON.stringify(jsonObject))  
+            //alert(visited.has('dddddw'))
+            </script>
+    </head>
+<body bgcolor="brown">
+    <form>
+        <br>
+        Scrape url: <input type="text" id="scrapeurl" value="https://www.freecodecamp.org/news/the-ultimate-guide-to-web-scraping-with-node-js-daa2027dcd3/"><br>
+        Depth: <input type="text" id="depth" value="1"><br>
+        Max pages: <input type="text" id="maxpages" value="5" ><br>
+        <input type="button" name="scrape" onclick="callScrape()" value="scrape">
+    </form> 
+    <div id="responseTime"></div>
+    <div id="response"></div>
+
+    <script>
+        function callScrape() {
+            document.getElementById("response").innerHTML = '';
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log(this.responseText)
+                    document.getElementById("responseTime").innerHTML = Date.now ()- starttime
+                    document.getElementById("response").innerHTML =  this.responseText;
+                }
+            };
+            var scrapeurl = document.getElementById("scrapeurl").value
+            var depth = document.getElementById("depth").value
+            var maxpages = document.getElementById("maxpages").value
+            var surl = 'http://localhost:8000/scrape?scrapeurl=' + scrapeurl + '&depth=' + depth + '&maxpages=' + maxpages
+            xhttp.open("GET", surl, true);
+            var starttime= Date.now();
+            xhttp.send();
+        }
+    </script>
+</body>
+</html>
